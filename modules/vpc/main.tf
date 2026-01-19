@@ -5,11 +5,11 @@ resource "aws_vpc" "my_vpc" {
     enable_dns_support = true
     enable_dns_hostnames = true
 
-    tags = merge {
-        var.tags,
+    tags = merge({
         { Name = "${var.env}--vpc" }
-    }
-}
+    },
+      var.tags
+)
 
 
 
@@ -22,11 +22,11 @@ resource "aws_subnet" "public-subnet" {
     availibility_zone = var.az
     map_public_ip_on_launch = true
 
-    tags = merge {
-        var.tags,
+    tags = merge({
         { Name = "${var.env}--public-subnet"}
-    }
-}
+    },
+     var.tags
+)
 
 
 resource "aws_subnet" "Private-subnet" {
@@ -35,11 +35,11 @@ resource "aws_subnet" "Private-subnet" {
     availibility_zone = var.az
     map_public_ip_on_launch = false
 
-    tags = merge {
-        var.tags,
+    tags = merge({
         { Name = "${var.env}--private-subnet"}
-    }
-}
+    },
+     var.tags
+)
 
 
 #=========IGW & NAT======================================================
