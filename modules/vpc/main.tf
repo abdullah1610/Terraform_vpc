@@ -65,11 +65,11 @@ resource "aws_eip" "my-eip" {
 }
 
 
-resource "aws_nat" "my_nat_gateway" {
+resource "aws_nat_gateway" "my_nat_gateway" {
     allocation_id = aws_eip.my-eip.id
     subnet_id = aws_subnet.public-subnet.id
 
-    depends_on = [aws_internate_gateway.my_igw]
+    depends_on = [aws_internet_gateway.my_igw]
 
     tags = {
         Name = "${var.env}--nat-instance"
@@ -85,7 +85,7 @@ resource "aws_route_table" "public" {
 
     route{
         cidr_block = "0.0.0.0/0"
-        gateway_id = aws_internate_gateway.my_igw.id
+        gateway_id = aws_internet_gateway.my_igw.id
     }
 
     tags = {
