@@ -118,7 +118,7 @@ resource "aws_route_table_association" "private_association" {
 #============== Security group ============================================
 
 resource "aws_security_group" "my_sg" {
-    name = ${var.env}--my-my_sg
+    name = "${var.env}--my-my_sg"
     vpc_id = aws_vpc.my_vpc.id
 
 
