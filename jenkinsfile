@@ -27,21 +27,28 @@ pipeline {
 
     environment {
         TF_IN_AUTOMATION = "true"
+        TF_ENV_DIR = "envs/${params.ENV}"
     }
 
     stages {
 
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Terraform Init') {
             steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'aws-creds',
-                        usernameVariable: 'AWS_ACCESS_KEY_ID',
-                        passwordVariable: 'AWS_SECRET_ACCESS_KEY'
-                    )
-                ]) {
-                    dir("envs/${params.ENV}") {
-                        bat 'terraform init -input=false'
+                dir("${TF_ENV_DIR}") {
+                    withCredentials([
+                        usernamePassword(
+                            credentialsId: 'aws-creds',
+                            usernameVariable: 'AWS_ACCESS_KEY_ID',
+                            passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+                        )
+                    ]) {
+                        bat 'terraform init -input=false -upgrade'
                     }
                 }
             }
@@ -49,7 +56,7 @@ pipeline {
 
         stage('Terraform Validate') {
             steps {
-                dir("envs/${params.ENV}") {
+                dir("${TF_ENV_DIR}") {
                     bat 'terraform validate'
                 }
             }
@@ -57,14 +64,14 @@ pipeline {
 
         stage('Terraform Plan') {
             steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'aws-creds',
-                        usernameVariable: 'AWS_ACCESS_KEY_ID',
-                        passwordVariable: 'AWS_SECRET_ACCESS_KEY'
-                    )
-                ]) {
-                    dir("envs/${params.ENV}") {
+                dir("${TF_ENV_DIR}") {
+                    withCredentials([
+                        usernamePassword(
+                            credentialsId: 'aws-creds',
+                            usernameVariable: 'AWS_ACCESS_KEY_ID',
+                            passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+                        )
+                    ]) {
                         bat 'terraform plan -var-file=terraform.tfvars -out=tfplan -input=false'
                     }
                 }
@@ -76,14 +83,14 @@ pipeline {
                 expression { params.AUTO_APPLY && !params.AUTO_DESTROY }
             }
             steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'aws-creds',
-                        usernameVariable: 'AWS_ACCESS_KEY_ID',
-                        passwordVariable: 'AWS_SECRET_ACCESS_KEY'
-                    )
-                ]) {
-                    dir("envs/${params.ENV}") {
+                dir("${TF_ENV_DIR}") {
+                    withCredentials([
+                        usernamePassword(
+                            credentialsId: 'aws-creds',
+                            usernameVariable: 'AWS_ACCESS_KEY_ID',
+                            passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+                        )
+                    ]) {
                         bat 'terraform apply -auto-approve tfplan'
                     }
                 }
@@ -95,14 +102,14 @@ pipeline {
                 expression { params.AUTO_DESTROY && !params.AUTO_APPLY }
             }
             steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'aws-creds',
-                        usernameVariable: 'AWS_ACCESS_KEY_ID',
-                        passwordVariable: 'AWS_SECRET_ACCESS_KEY'
-                    )
-                ]) {
-                    dir("envs/${params.ENV}") {
+                dir("${TF_ENV_DIR}") {
+                    withCredentials([
+                        usernamePassword(
+                            credentialsId: 'aws-creds',
+                            usernameVariable: 'AWS_ACCESS_KEY_ID',
+                            passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+                        )
+                    ]) {
                         bat 'terraform destroy -var-file=terraform.tfvars -auto-approve'
                     }
                 }
