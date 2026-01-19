@@ -10,7 +10,7 @@ resource "aws_vpc" "my_vpc" {
          Name = "${var.env}--vpc"
     },
       var.tags
-)
+)}
 
 
 
@@ -28,7 +28,7 @@ resource "aws_subnet" "public-subnet" {
          Name = "${var.env}--public-subnet"
     },
      var.tags
-)
+)}
 
 
 resource "aws_subnet" "Private-subnet" {
@@ -42,7 +42,7 @@ resource "aws_subnet" "Private-subnet" {
          Name = "${var.env}--private-subnet"
     },
      var.tags
-)
+)}
 
 
 #=========IGW & NAT======================================================
