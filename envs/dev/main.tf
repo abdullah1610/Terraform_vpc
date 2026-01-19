@@ -1,5 +1,5 @@
 module "vpc" {
-    source = "../../module/vpc"
+    source = "../../modules/vpc"
 
   env                   = var.env
   region                = var.region
