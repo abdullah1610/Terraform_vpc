@@ -21,7 +21,7 @@ resource "aws_vpc" "my_vpc" {
 resource "aws_subnet" "public-subnet" {
     vpc_id = aws_vpc.my_vpc.id
     cidr_block = var.public_subnet_cidr
-    availibility_zone = var.az
+    availability_zone = var.az
     map_public_ip_on_launch = true
 
     tags = merge(
@@ -36,7 +36,7 @@ resource "aws_subnet" "public-subnet" {
 resource "aws_subnet" "Private-subnet" {
     vpc_id = aws_vpc.my_vpc.id
     cidr_block = var.private_subnet_cidr
-    availibility_zone = var.az
+    availability_zone = var.az
     map_public_ip_on_launch = false
 
     tags = merge(
@@ -51,7 +51,7 @@ resource "aws_subnet" "Private-subnet" {
 #=========IGW & NAT======================================================
 
 
-resource "aws_internate_gateway" "my_igw" {
+resource "aws_internet_gateway" "my_igw" {
     vpc_id = aws_vpc.my_vpc.id
 
     tags = {
@@ -132,21 +132,21 @@ resource "aws_security_group" "my_sg" {
         from_port = 22
         to_port = 22
         protocol = "tcp"
-        cidr_block = ["0.0.0.0/0"]
+        cidr_blocks = ["0.0.0.0/0"]
     }
 
     ingress {
         from_port = 80
         to_port = 80
         protocol = "tcp"
-        cidr_block = ["0.0.0.0/0"]
+        cidr_blocks = ["0.0.0.0/0"]
     }
 
     egress {
         from_port = 0
         to_port = 0
         protocol = "-1"
-        cidr_block = ["0.0.0.0/0"]
+        cidr_blocks = ["0.0.0.0/0"]
     }
 
     tags = var.tags
