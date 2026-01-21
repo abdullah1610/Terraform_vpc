@@ -41,7 +41,7 @@ pipeline {
                     )
                 ]) {
                     dir("envs/${params.ENV}") {
-                        bat 'terraform init -input=false'
+                        bat 'terraform init -reconfigure -input=false'
                     }
                 }
             }
