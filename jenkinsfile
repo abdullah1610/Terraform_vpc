@@ -48,7 +48,7 @@ pipeline {
                             passwordVariable: 'AWS_SECRET_ACCESS_KEY'
                         )
                     ]) {
-                        bat 'terraform init -input=false -upgrade'
+                         bat 'terraform init -reconfigure -input=false'
                     }
                 }
             }
